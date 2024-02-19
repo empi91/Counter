@@ -1,23 +1,27 @@
 `timescale 1ns / 1ps
 
 module counter (clock, reset, enable, count_set, c_out);
-
+// Inputs
 input clock;
 input reset;
 input enable;
 input count_set;
 
+// Output
 output [3:0] c_out;
 
 reg [3:0] c_out;
 
 always @ (posedge clock)
 begin: COUNT
+	// Check if reset is high
     if (reset == 1'b1) begin
         c_out <= #1 4'b0000;
     end 
+	// Check if counter is enabled
     else if (enable == 1'b1) begin
         if (count_set == 1'b0) begin
+			// Check if output didn't reach the limit
             if (c_out == 4'b1111) begin	
                 c_out <= 4'b0000;
             end 
@@ -26,6 +30,7 @@ begin: COUNT
             end
         end 
         else if (count_set == 1'b1) begin
+			// Check if output didn't reach 0
             if (c_out == 4'b0000) begin
                 c_out <= 4'b1111;
             end
