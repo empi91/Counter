@@ -1,0 +1,41 @@
+`timescale 1ns / 1ps
+
+module counter_tb;
+
+reg count_set = 0;
+reg clock = 0;
+reg reset = 0;
+reg enable = 0;
+
+wire [3:0] result;
+
+always begin
+  #5 clock = ~clock;
+end
+
+
+counter c1 (
+	.clock(clock), 
+	.reset(reset), 
+	.enable(enable), 
+	.count_set(count_set), 
+	.c_out(result)
+);
+
+//self_counter c2 (clock, reset, enable, count_set, result);
+
+initial begin
+  $display ("time\t | clk | reset | enable | count_set | counter");	
+  $monitor ("%g\t   %b     %b       %b        %b           %b", 
+		$time, clock, reset, enable, count_set, result);
+  #5 reset = 1;
+  #10 reset = 0;   // De-assert the reset
+  #10 enable = 1;  // Assert enable
+  #180 reset = 1;
+  #5 reset = 0;
+  #5 count_set = 1;
+  #170 enable = 0; // De-assert enable
+  #5 $finish;      // Terminate simulation
+end
+
+endmodule

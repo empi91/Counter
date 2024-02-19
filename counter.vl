@@ -1,0 +1,38 @@
+`timescale 1ns / 1ps
+
+module counter (clock, reset, enable, count_set, c_out);
+
+input clock;
+input reset;
+input enable;
+input count_set;
+
+output [3:0] c_out;
+
+reg [3:0] c_out;
+
+always @ (posedge clock)
+begin: COUNT
+    if (reset == 1'b1) begin
+        c_out <= #1 4'b0000;
+    end 
+    else if (enable == 1'b1) begin
+        if (count_set == 1'b0) begin
+            if (c_out == 4'b1111) begin	
+                c_out <= 4'b0000;
+            end 
+            else begin
+                c_out <= c_out + 1;
+            end
+        end 
+        else if (count_set == 1'b1) begin
+            if (c_out == 4'b0000) begin
+                c_out <= 4'b1111;
+            end
+            else begin
+                c_out <= #1 c_out - 1;
+            end
+        end
+    end
+end
+endmodule
